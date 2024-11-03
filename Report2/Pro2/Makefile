@@ -1,6 +1,6 @@
 #Execute File
 execute/main: library/libstest.a
-	gcc -o execute/main -I./libaray -L./library source/main.c -ltest
+	gcc -g -o execute/main -I./libaray -L./library source/main.c -ltest
 #Libaray File
 library/libstest.a: source/Add.o source/Sub.o source/Mul.o source/Div.o
 	ar rcs library/libtest.a source/Add.o source/Sub.o source/Mul.o source/Div.o
@@ -14,7 +14,7 @@ source/Mul.o: source/Mul.c
 source/Div.o: source/Div.c
 	gcc -o source/Div.o -c source/Div.c
 #Execute 
-Execute :
+Execute:
 	execute/main
 #Delete Files 
 clean: 
