@@ -1,0 +1,13 @@
+-static library
+	여러 소스파일(.c)를 오브젝트 파일로 생성
+	ar rcs 정적라이브러리이름.a 파일1.o 파일2.o -> 정적라이브러리 생성
+	gcc -I(대문자)/라이브러리경로 -L/라이브러리경로 사용파일.c -lstatic -> 실행파일 생성
+-share library
+	gcc -shared -Wl,-soname,공유라이브러리.so.1 -o 공유라이브러리.so.1.0.1 파일1.o 파일2.o ... -> 공유라이브러리 생성
+	ln -s 공유라이브러리.so.1.0.1 공유라이브러리.so. -> 링킹
+	gcc -I(대문자)/라이브러리경로 -L/라이브러리경로 사용파일.c -Wl,--rpath="라이브러리경로" -lshared -> 실행파일 생성
+-dynamic library
+	소스 코드에 <dlfcn.h> 추가
+	void *handle = dlopen("공유라이브러리경로", RTLD_LAZY) 를 통해 라이브러리 파일 가져옴
+	void *함수 = dlsym(handle, "라이브러리함수이름");를 통해 라이브러리 함수 가져옴
+	gcc -rdynamic 파일.c -ldl -> 실행파일 생성
