@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "signal.h": "c",
-        "filelist.h": "c",
-        "makedirectory.h": "c",
-        "unistd.h": "c"
-    }
-}

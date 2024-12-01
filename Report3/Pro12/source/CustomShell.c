@@ -7,6 +7,7 @@
 #include <signal.h>
 #include <string.h>
 #include <fcntl.h>
+
 #pragma region CommandFunc
 #include "FileList.h"
 #include "WorkingDirectory.h"
@@ -44,7 +45,7 @@ int main(){
     printf("**********커스텀 쉘 실행**********\n");
     while (1) {
         printf("CustomShell> ");
-        scanf("%s", buf);
+        gets(buf);  //gets()함수는 곧 사라질 예정
         clearerr(stdin);
         narg = getargs(buf, argv); 
 
@@ -56,6 +57,7 @@ int main(){
 
         //명령어 끝에 '&'가 있으면 백그라운드 실행 
         if (narg > 0 && strcmp(argv[narg - 1], "&") == 0) { 
+            printf("명령어 수: %d \n",narg);
             argv[narg - 1] = NULL; // '&' 제거 
             isBackground = true; 
         } 
@@ -64,10 +66,10 @@ int main(){
         }
 
         pid = fork();
-        //자식 프로세스
+        //--------------------------자식 프로세스--------------------------
         if (pid == 0){
             //pwd 명령어
-                if (narg > 0 && strcmp(argv[0], "pwd") == 0) {
+            if (narg > 0 && strcmp(argv[0], "pwd") == 0) {
                 WorkingDirectory();
                 exit(1);
             }
@@ -102,30 +104,25 @@ int main(){
                     break;
                 }
             }
-            //명령어 실행
-            if(isBackground){
-                Background(argv);
-            }
-            else{
-                //기타 다른 명령어 실행
-                if((result = RunCommand(narg,argv)) == 1){
-                    execvp(argv[0], argv);
-                    perror("자식 명령어 실행 실패");
-                    exit(1);
-                }
+            //기타 다른 명령어 실행
+            if((result = RunCommand(narg,argv)) == 1){
+                execvp(argv[0], argv);
+                perror("자식 명령어 실행 실패");
+                exit(1);
             }
         }
-        //부모 프로세스
+        //--------------------------부모 프로세스--------------------------
         else if (pid > 0){
-            chidPID = pid;
             if(!isBackground){
                 //자식 프로세스를 기다림
                 wait((int *) 0);
             }
+            else{
+                printf("pid : %d\n", pid);
+            }
         }
         else perror("fork 실패");
     }
-    
 }
 
 //입력 받은 명령어 파싱
@@ -144,7 +141,23 @@ int getargs(char *cmd, char **argv){
     return narg;
 }
 
+/* 프로세스 데몬화
 void Background(char **argv){
+    fflush(stdout);
+    //실행 결과를 log 파일에 저장
+    int logFile = open("log.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
+
+    if (dup2(logFile, STDOUT_FILENO) == -1) { 
+        perror("stdout 리디렉션 실패"); 
+        exit(1);
+    }
+
+    if (dup2(logFile, STDERR_FILENO) == -1) { 
+        perror("stderr 리디렉션 실패"); 
+        exit(1);
+    }
+    close(logFile);
+
     //daemon 함수를 이용하여 데몬 프로세스 생성
       if (daemon(0, 0) == -1) { // daemon 실패 처리
         perror("데몬 프로세스 전환 실패");
@@ -154,6 +167,7 @@ void Background(char **argv){
     perror("백그라운드 실패");
     exit(1);
 }
+*/
 
 void SignalHandler(int signo) {
     if (signo == SIGINT) {
