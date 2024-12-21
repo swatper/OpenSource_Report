@@ -27,12 +27,32 @@ bool Client::writeData(QByteArray data){
 }
 void Client::on_pushButton_clicked(){
     if (fd_flag){
-        QString sendData;
-        sendData = ui->lineEdit->text();
-        send_flag =
-            writeData(sendData.toStdString().c_str());
-        if (!send_flag)
+        QString sendData = ui->lineEdit->text();
+        QString fileName = ui->label->text();
+        /*if(fileName != "File is Empty"){
+            QFile file(fileName);
+            //파일 열기 
+            if (file.open(QIODevice::ReadOnly)) {
+                QByteArray fileData = file.readAll();
+                file.close();
+                send_flag = writeData(fileData);
+                if (!send_flag) {
+                    ui->textEdit->insertPlainText("File send fail\n");
+                }
+            } 
+        }*/
+        send_flag = writeData(sendData.toStdString().c_str());
+        if (!send_flag && fileName == "File is Empty")
             ui->textEdit->insertPlainText("Socket send fail\n");
+    }
+}
+
+void Client::on_pushButton2_clicked(){
+    QString fileName = QFileDialog::getOpenFileName(this, "파일 선택", "", "모든 파일 (*);;텍스트 파일 (*.txt)");
+    if (!fileName.isEmpty()) {
+        ui->label->setText(fileName);
+    }else{
+        ui->label->setText("File is Empty");
     }
 }
 void Client::readyRead(){

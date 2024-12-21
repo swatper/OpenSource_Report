@@ -3,6 +3,9 @@
 #include <QMainWindow>
 #include <QtCore>
 #include <QtNetwork>
+#include <QtWidgets>
+#include <QFileDialog>
+#include <QFile>
 namespace Ui{
     class Client;
 }
@@ -16,6 +19,7 @@ public slots:
     bool writeData(QByteArray data);
 private slots:
     void on_pushButton_clicked();
+    void on_pushButton2_clicked();
 private slots:
     void readyRead();
 private:

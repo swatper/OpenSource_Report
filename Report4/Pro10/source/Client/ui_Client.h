@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -28,6 +29,8 @@ public:
     QPushButton *pushButton;
     QTextEdit *textEdit;
     QLineEdit *lineEdit;
+    QLabel *label;
+    QPushButton *pushButton2;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -36,7 +39,7 @@ public:
         if (Client->objectName().isEmpty())
             Client->setObjectName(QString::fromUtf8("Client"));
         Client->setEnabled(true);
-        Client->resize(391, 299);
+        Client->resize(391, 324);
         centralwidget = new QWidget(Client);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         pushButton = new QPushButton(centralwidget);
@@ -52,6 +55,12 @@ public:
         lineEdit->setGeometry(QRect(10, 220, 301, 23));
         lineEdit->setMouseTracking(false);
         lineEdit->setReadOnly(false);
+        label = new QLabel(centralwidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setGeometry(QRect(10, 250, 301, 16));
+        pushButton2 = new QPushButton(centralwidget);
+        pushButton2->setObjectName(QString::fromUtf8("pushButton2"));
+        pushButton2->setGeometry(QRect(320, 250, 61, 20));
         Client->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Client);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -68,8 +77,10 @@ public:
 
     void retranslateUi(QMainWindow *Client)
     {
-        Client->setWindowTitle(QCoreApplication::translate("Client", "MainWindow", nullptr));
+        Client->setWindowTitle(QCoreApplication::translate("Client", "Client", nullptr));
         pushButton->setText(QCoreApplication::translate("Client", "Send", nullptr));
+        label->setText(QCoreApplication::translate("Client", "File is Empty", nullptr));
+        pushButton2->setText(QCoreApplication::translate("Client", "File", nullptr));
     } // retranslateUi
 
 };
