@@ -28,8 +28,13 @@ void Server::newConnection(){
 void Server::disconnected(){
     QTcpSocket *socket = static_cast<QTcpSocket *>(sender());
     QByteArray *buffer = buffers.value(socket);
-    socket->deleteLater();
-    delete buffer;
+    // 클라이언트 삭제
+    ui->textEdit->insertPlainText("Client " + socket->objectName() + " disconnected.\n");
+    // 목록에서 클라이언트 제거
+    clients.erase(remove(clients.begin(), clients.end(), socket), clients.end());
+    buffers.remove(socket);
+    delete buffer;             // 버퍼 메모리 해제
+    socket->deleteLater();     // 소켓 메모리 해제
 }
 void Server::readyRead(){
     QTcpSocket *socket = static_cast<QTcpSocket *>(sender());
