@@ -16,8 +16,9 @@ Server::~Server(){
 void Server::newConnection(){
     while (server->hasPendingConnections()){
         QTcpSocket *socket = server->nextPendingConnection();
+        clients.push_back(socket);
         socket->setObjectName(QString::number(cnt));
-        ui->textEdit->insertPlainText("Connected from" + QString::number(cnt++) + "\r\n");
+        ui->textEdit->insertPlainText("Connected from " + QString::number(cnt++) + "\r\n");
         connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
         connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
         QByteArray *buffer = new QByteArray();
@@ -37,7 +38,10 @@ void Server::readyRead(){
         buffer->append(socket->readAll());
         ui->textEdit->insertPlainText(socket -> objectName() + ": " + 
                                       QString(buffer->data()) + "\r\n");
-        socket->write(buffer->data()); // echo data
+        QString message = QString("%1: %2").arg(socket->objectName()).arg(QString(buffer->data()));
+        for(QTcpSocket* client : clients){
+            client->write(message.toUtf8()); 
+        }
         send_flag = socket->waitForBytesWritten();
         if (!send_flag)
             ui->textEdit->insertPlainText("Socket send fail\n");

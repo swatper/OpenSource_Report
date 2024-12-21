@@ -4,6 +4,10 @@
 #include <QtCore>
 #include <QtNetwork>
 #include <QString>
+#include <vector>
+
+using namespace std;
+
 namespace Ui{
     class Server;
 }
@@ -24,6 +28,7 @@ private:
     QHash<QTcpSocket *, QByteArray *> buffers;
     bool send_flag = false;
     uint32_t cnt = 0;
+    vector<QTcpSocket *> clients;
 };
 
 #endif 
