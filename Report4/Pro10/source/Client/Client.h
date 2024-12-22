@@ -6,6 +6,12 @@
 #include <QtWidgets>
 #include <QFileDialog>
 #include <QFile>
+struct FileData{
+    QString fileName;
+    qint64 fileSize;
+    QByteArray data;
+}
+
 namespace Ui{
     class Client;
 }
