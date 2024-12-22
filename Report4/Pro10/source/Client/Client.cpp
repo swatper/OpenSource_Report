@@ -31,11 +31,14 @@ void Client::on_pushButton_clicked(){
         QString fileName = ui->label->text();
         if(fileName != "File is Empty"){
             QFile file(fileName);
-            //파일 열기 
             if (file.open(QIODevice::ReadOnly)) {
-                QByteArray fileData = file.readAll();
+                QByteArray fData = file.readAll();
+                QString fPath = fileName;
+                QFileInfo fileInfo(fPath);
+                QString fName = fileInfo.fileName();
                 file.close();
-                send_flag = writeData(fileData);
+                QByteArray result = "\n" + fName.toUtf8() + "\n" + fData;
+                send_flag = writeData(result);
                 if (!send_flag) {
                     ui->textEdit->insertPlainText("File send fail\n");
                 }
