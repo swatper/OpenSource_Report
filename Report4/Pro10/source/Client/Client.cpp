@@ -5,8 +5,15 @@ Client::Client(QWidget *parent) : QMainWindow(parent), ui(new Ui::Client){
     ui->setupUi(this);
     socket = new QTcpSocket(this);
     fd_flag = connectToHost("127.0.0.1"); // localhost
-    if (!fd_flag)
+    if (!fd_flag){
         ui->textEdit->insertPlainText("Socket connect fail\n");
+        ui->label2->setText("Disconnected");
+        ui->pushButton3->setEnabled(true);
+    }
+    else{
+        ui->label2->setText("Connected");
+        ui->pushButton3->setEnabled(false);
+    }
 }
 Client::~Client(){
     delete ui;
@@ -31,13 +38,14 @@ void Client::on_pushButton_clicked(){
         QString fileName = ui->label->text();
         if(fileName != "File is Empty"){
             QFile file(fileName);
+            //파일 열기 
             if (file.open(QIODevice::ReadOnly)) {
                 QByteArray fData = file.readAll();
                 QString fPath = fileName;
                 QFileInfo fileInfo(fPath);
                 QString fName = fileInfo.fileName();
                 file.close();
-                QByteArray result = "\n" + fName.toUtf8() + "\n" + fData;
+                QByteArray result = "\n" +fName.toUtf8() + "\n" + fData;
                 send_flag = writeData(result);
                 if (!send_flag) {
                     ui->textEdit->insertPlainText("File send fail\n");
@@ -69,6 +77,20 @@ void Client::on_pushButton2_clicked(){
         ui->lineEdit->setEnabled(true);
     }
 }
+
+void Client::on_pushButton3_clicked(){
+    fd_flag = connectToHost("127.0.0.1"); // localhost
+    if (!fd_flag){
+        ui->textEdit->insertPlainText("Socket connect fail\n");
+        ui->label2->setText("Disconnected");
+        ui->pushButton3->setEnabled(true);
+    }
+    else{
+        ui->label2->setText("Connected");
+        ui->pushButton3->setEnabled(false);
+    }
+}
+
 void Client::readyRead(){
     QTcpSocket *socket = static_cast<QTcpSocket *>(sender());
     while (socket->bytesAvailable() > 0){
